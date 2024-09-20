@@ -1,0 +1,15 @@
+// dateUtils.vxty
+FUNCTION formatDate(date) {
+    RETURN date.toISOString().split('T')[0]; // YYYY-MM-DD
+}
+
+FUNCTION isToday(date) {
+    VAR today = new Date();
+    RETURN date.getFullYear() == today.getFullYear() && 
+           date.getMonth() == today.getMonth() && 
+           date.getDate() == today.getDate();
+}
+
+FUNCTION daysBetween(startDate, endDate) {
+    RETURN (endDate - startDate) / (1000 * 60 * 60 * 24);
+}
