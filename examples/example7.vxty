@@ -1,0 +1,18 @@
+// example7.vxty
+// Demonstrates using an external package for string manipulation
+
+// Install the stringUtils package
+VX Install stringUtils;
+
+// Import the stringUtils package
+IMPORT stringUtils;
+
+// Use a function from stringUtils package to reverse a string
+VAR originalString = "Vexty Language";
+VAR reversedString = stringUtils.reverse(originalString);
+PRINT "Original String: " + originalString;
+PRINT "Reversed String: " + reversedString;
+
+// Use another function to convert string to uppercase
+VAR upperString = stringUtils.toUpperCase(originalString);
+PRINT "Uppercase String: " + upperString;
