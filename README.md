@@ -9,7 +9,6 @@
 
 - [Description](#description)
 - [How To Use](#how-to-use)
-- [References](#references)
 - [License](#license)
 - [Links](#links)
 
@@ -23,7 +22,7 @@
 
 *Made With js*
 
-[⬆️](#Viper)
+[⬆️](#links)
 
 ---
 
@@ -35,11 +34,6 @@ Go to [Links](#Viper)
 **Installation in Our discord!**
 
 ---
-[⬆️](#Viper)
-
-
-
-## References
 [⬆️](#Viper)
 
 
