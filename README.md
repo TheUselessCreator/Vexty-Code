@@ -40,9 +40,6 @@ Go to [Links](#Viper)
 ```
 
 
----
-
----
 ```
 ## References
 [⬆️](#Viper)
