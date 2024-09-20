@@ -6,3 +6,14 @@ FUNCTION add(a, b) {
 FUNCTION subtract(a, b) {
     RETURN a - b;
 }
+
+FUNCTION multiply(a, b) {
+    RETURN a * b;
+}
+
+FUNCTION divide(a, b) {
+    IF (b == 0) {
+        THROW "Division by zero error!";
+    }
+    RETURN a / b;
+}
