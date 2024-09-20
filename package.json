@@ -1,3 +1,22 @@
-"bin": {
-    "vexty": "./bin/vexty.js"
+{
+  "name": "vexty-compiler",
+  "version": "1.0.0",
+  "description": "A compiler for the Vexty programming language",
+  "main": "compiler/index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest",
+    "install:packages": "node packageManager.js"
+  },
+  "dependencies": {
+    "jest": "^29.0.0" // Ensure you have the latest version of Jest
+  },
+  "devDependencies": {},
+  "keywords": [
+    "compiler",
+    "programming language",
+    "vexty"
+  ],
+  "author": "vexty",
+  "license": "MIT"
 }
