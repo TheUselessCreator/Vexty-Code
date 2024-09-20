@@ -1,0 +1,16 @@
+// stringUtils.vxty
+FUNCTION reverse(str) {
+    RETURN str.split('').reverse().join('');
+}
+
+FUNCTION toUpperCase(str) {
+    RETURN str.toUpperCase();
+}
+
+FUNCTION toLowerCase(str) {
+    RETURN str.toLowerCase();
+}
+
+FUNCTION concatenate(a, b) {
+    RETURN a + b;
+}
