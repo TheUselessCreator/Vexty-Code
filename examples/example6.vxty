@@ -1,0 +1,13 @@
+// example6.vxty
+// Demonstrates error handling
+
+TRY {
+    VAR numerator = 10;
+    VAR denominator = 0;
+    VAR result = numerator / denominator;
+    PRINT "Result: " + result;
+} CATCH (error) {
+    PRINT "An error occurred: " + error;
+} FINALLY {
+    PRINT "Execution completed.";
+}
