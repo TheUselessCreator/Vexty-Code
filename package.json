@@ -9,7 +9,7 @@
     "install:packages": "node packageManager.js"
   },
   "dependencies": {
-    "jest": "^29.0.0" // Ensure you have the latest version of Jest
+    "jest": "^29.0.0" 
   },
   "devDependencies": {},
   "keywords": [
