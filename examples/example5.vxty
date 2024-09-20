@@ -1,0 +1,25 @@
+// example5.vxty
+// Demonstrates classes and object-oriented programming
+
+CLASS Person {
+    FUNCTION __init__(name, age) {
+        self.name = name;
+        self.age = age;
+    }
+
+    FUNCTION greet() {
+        PRINT "Hello, my name is " + self.name + " and I am " + self.age + " years old.";
+    }
+
+    FUNCTION haveBirthday() {
+        self.age = self.age + 1;
+        PRINT "Happy Birthday! Now I am " + self.age + " years old.";
+    }
+}
+
+// Create an instance of Person
+VAR alice = Person("Alice", 28);
+alice.greet();
+
+// Alice has a birthday
+alice.haveBirthday();
