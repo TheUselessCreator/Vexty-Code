@@ -1,0 +1,17 @@
+// example4.vxty
+// Demonstrates package installation and usage
+
+// Install a package named "mathUtils"
+VX Install mathUtils;
+
+// Use the installed package
+IMPORT mathUtils;
+
+// Use a function from mathUtils package
+VAR number = 16;
+VAR squareRoot = mathUtils.sqrt(number);
+PRINT "The square root of " + number + " is " + squareRoot;
+
+// Use another function from mathUtils package
+VAR squared = mathUtils.square(number);
+PRINT number + " squared is " + squared;
