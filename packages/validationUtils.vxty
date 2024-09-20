@@ -1,0 +1,9 @@
+// validationUtils.vxty
+FUNCTION isEmailValid(email) {
+    VAR regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    RETURN regex.test(email);
+}
+
+FUNCTION isNumber(value) {
+    RETURN typeof value === 'number' && !isNaN(value);
+}
