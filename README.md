@@ -1,4 +1,4 @@
-# Viper
+# Vexty
 
 ![Project Image](https://github.com/TheUselessCreator/Vexty/blob/main/GitAssets/Vexty.jpg)
 
@@ -22,19 +22,19 @@
 
 *Made With js*
 
-[⬆️](#links)
+[⬆️](#Vexty)
 
 ---
 
 ## How to Use
 
-Go to [Links](#Links)
+Go to [Links](#links)
 #### Installation
 
 **Installation in Our discord!**
 
 ---
-[⬆️](#Viper)
+[⬆️](#Vexty)
 
 
 
@@ -62,7 +62,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-[⬆️](#Viper)
+[⬆️](#Vexty)
 
 
 ## Links
