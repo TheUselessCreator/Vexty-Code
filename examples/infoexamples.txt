@@ -1,0 +1,67 @@
+INFO/NOTES
+
+Create the examples Folder: Navigate to your project directory and create an examples folder if it doesn't already exist.
+
+
+mkdir examples
+Add Example Files: Create each example file within the examples folder. For instance, to create example1.vxty:
+
+
+touch examples/example1.vxty
+Copy the Code: Open each .vxty file in your preferred text editor and paste the corresponding code provided above.
+
+Commit the Examples to GitHub: After adding all example files, commit and push them to your GitHub repository.
+
+git add examples/
+git commit -m "Add example Vexty scripts demonstrating various features"
+git push origin main
+
+Running the Examples
+
+Assuming you have set up your Vexty compiler and CLI (vexty.js) correctly, you can run these examples from the command line.
+
+Navigate to the Project Directory:
+
+cd Vexty-Compiler
+Run an Example:
+
+For example, to run example1.vxty:
+
+vexty ./examples/example1.vxty
+Expected Output:
+
+Variables and Operations:
+x = 10
+y = 20
+Sum of x and y = 30
+Product of x and y = 200
+Running Other Examples:
+
+Enhancing the Compiler to Support These Features
+To ensure that your compiler can handle the features demonstrated in the examples, you may need to implement the following enhancements:
+
+Extended Lexer and Parser:
+
+Keywords: FUNCTION, RETURN, IF, ELSE, FOR, WHILE, CLASS, TRY, CATCH, FINALLY, IMPORT, VX Install.
+Operators: Logical operators (&&, ||, !), comparison operators (==, !=, >=, <=), etc.
+Data Structures: Support for lists ([]), dictionaries ({}), and possibly more complex structures.
+Interpreter Enhancements:
+
+Functions: Ability to define and call functions with parameters and return values.
+Control Structures: Implement if-else, for, and while loops.
+Classes and Objects: Support for defining classes, creating instances, and method calls.
+Error Handling: Implement try-catch-finally blocks for exception handling.
+Package Management: Implement the VX Install and IMPORT functionalities to manage external packages.
+Package Manager (packageManager.js):
+
+Handle downloading and installing packages from a repository or URL.
+Manage installed packages, possibly maintaining a packages/ directory.
+Ensure that imported packages are correctly integrated into the interpreter's environment.
+CLI Enhancements (bin/vexty.js):
+
+Parse additional command-line arguments for installing packages.
+Provide helpful error messages and usage instructions.
+Testing:
+
+Develop comprehensive unit tests for each feature to ensure reliability.
+Use the test/ folder to organize your test cases.
