@@ -1,0 +1,8 @@
+// mathUtils.vxty
+FUNCTION add(a, b) {
+    RETURN a + b;
+}
+
+FUNCTION subtract(a, b) {
+    RETURN a - b;
+}
