@@ -1,0 +1,13 @@
+// example1.vxty
+// Demonstrates variable declarations, arithmetic operations, and print statements
+
+VAR x = 10;
+VAR y = 20;
+VAR sum = x + y;
+VAR product = x * y;
+
+PRINT "Variables and Operations:";
+PRINT "x = " + x;
+PRINT "y = " + y;
+PRINT "Sum of x and y = " + sum;
+PRINT "Product of x and y = " + product;
