@@ -1,0 +1,10 @@
+// fileUtils.vxty
+FUNCTION readFile(filePath) {
+    // Mocked file read for demonstration
+    RETURN "Content of " + filePath;
+}
+
+FUNCTION writeFile(filePath, content) {
+    // Mocked file write for demonstration
+    RETURN "Wrote to " + filePath;
+}
