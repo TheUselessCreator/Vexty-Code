@@ -1,0 +1,20 @@
+// example2.vxty
+// Demonstrates function declarations, function calls, and conditionals
+
+FUNCTION greet(name) {
+    PRINT "Hello, " + name + "!";
+}
+
+FUNCTION checkNumber(num) {
+    IF num > 0 {
+        PRINT num + " is positive.";
+    } ELSE {
+        PRINT num + " is not positive.";
+    }
+}
+
+VAR userName = "Alice";
+VAR userNumber = 5;
+
+greet(userName);
+checkNumber(userNumber);
