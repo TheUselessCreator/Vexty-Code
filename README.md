@@ -28,7 +28,7 @@
 
 ## How to Use
 
-Go to [Links](#Viper)
+Go to [Links](#Links)
 #### Installation
 
 **Installation in Our discord!**
