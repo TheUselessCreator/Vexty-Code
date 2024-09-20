@@ -1,0 +1,9 @@
+// randomUtils.vxty
+FUNCTION randomInt(min, max) {
+    RETURN Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+FUNCTION randomChoice(arr) {
+    VAR index = randomInt(0, arr.length - 1);
+    RETURN arr[index];
+}
