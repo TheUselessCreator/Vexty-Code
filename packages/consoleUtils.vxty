@@ -1,0 +1,8 @@
+// consoleUtils.vxty
+FUNCTION log(message) {
+    PRINT(message); // Assuming PRINT is a built-in function
+}
+
+FUNCTION error(message) {
+    PRINT("ERROR: " + message);
+}
