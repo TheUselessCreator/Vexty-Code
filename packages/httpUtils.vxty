@@ -1,0 +1,10 @@
+// httpUtils.vxty
+FUNCTION fetch(url) {
+    // Mocked fetch for demonstration
+    RETURN "Fetched content from " + url;
+}
+
+FUNCTION post(url, data) {
+    // Mocked post for demonstration
+    RETURN "Posted data to " + url;
+}
