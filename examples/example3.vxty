@@ -1,0 +1,29 @@
+// example3.vxty
+// Demonstrates loops, lists, and dictionaries
+
+// Working with Lists
+VAR fruits = ["Apple", "Banana", "Cherry"];
+PRINT "Fruits List:";
+FOR fruit IN fruits {
+    PRINT fruit;
+}
+
+// Working with Dictionaries
+VAR person = {
+    "name": "Bob",
+    "age": 30,
+    "city": "New York"
+};
+PRINT "Person Dictionary:";
+PRINT "Name: " + person["name"];
+PRINT "Age: " + person["age"];
+PRINT "City: " + person["city"];
+
+// WHILE Loop Example
+VAR count = 3;
+PRINT "Counting down:";
+WHILE count > 0 {
+    PRINT count;
+    count = count - 1;
+}
+PRINT "Liftoff!";
