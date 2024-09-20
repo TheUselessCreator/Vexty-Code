@@ -66,3 +66,6 @@ SOFTWARE.
 
 
 ## Links
+[Discord](https://discord.gg/BU563zqMuu)
+[GitHub](https://github.com/TheUselessCreator/Vexty/tree/main)
+[Website](https://sites.google.com/view/vexty-code/home)
