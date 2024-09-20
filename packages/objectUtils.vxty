@@ -1,0 +1,19 @@
+// objectUtils.vxty
+FUNCTION merge(obj1, obj2) {
+    VAR result = {};
+    FOR (VAR key IN obj1) {
+        result[key] = obj1[key];
+    }
+    FOR (VAR key IN obj2) {
+        result[key] = obj2[key];
+    }
+    RETURN result;
+}
+
+FUNCTION keys(obj) {
+    RETURN Object.keys(obj);
+}
+
+FUNCTION values(obj) {
+    RETURN Object.values(obj);
+}
