@@ -1,0 +1,70 @@
+// Variable Declarations
+VAR x = 15;
+VAR y = 25;
+VAR message = "Hello, Vexty!";
+VAR condition = true;
+
+// Simple Print Statements
+PRINT("Welcome to the Vexty Language!");
+PRINT("x is: ");
+PRINT(x);
+PRINT("y is: ");
+PRINT(y);
+
+// Basic Arithmetic
+VAR sum = x + y;
+VAR product = x * y;
+PRINT("The sum of x and y is: ");
+PRINT(sum);
+PRINT("The product of x and y is: ");
+PRINT(product);
+
+// Conditional Statements
+IF (x > y) {
+    PRINT("x is greater than y");
+} ELSE IF (x < y) {
+    PRINT("x is less than y");
+} ELSE {
+    PRINT("x and y are equal");
+}
+
+// While Loop Example
+VAR count = 0;
+WHILE (count < 5) {
+    PRINT("Count is: ");
+    PRINT(count);
+    count = count + 1;
+}
+
+// Function Example
+FUNC multiply(a, b) {
+    RETURN a * b;
+}
+
+VAR result = multiply(x, y);
+PRINT("The result of multiplying x and y is: ");
+PRINT(result);
+
+// Nested If and Loops
+PRINT("Checking for even numbers between 1 and 10:");
+VAR i = 1;
+WHILE (i <= 10) {
+    IF (i % 2 == 0) {
+        PRINT(i);
+    }
+    i = i + 1;
+}
+
+// Combining String and Variable
+VAR userName = "VextyUser";
+PRINT("Hello, " + userName + "! Welcome to your personalized environment.");
+
+// Handling Conditionals with Boolean
+IF (condition == true) {
+    PRINT("Condition is true!");
+} ELSE {
+    PRINT("Condition is false.");
+}
+
+// Final Message
+PRINT("Vexty example completed successfully.");
