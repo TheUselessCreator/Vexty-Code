@@ -1,6 +1,6 @@
 {
   "name": "vexty-compiler",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "A compiler for the Vexty programming language",
   "main": "compiler/index.js",
   "scripts": {
