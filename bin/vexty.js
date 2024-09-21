@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+require('dotenv').config(); // Load environment variables from .env file
+
 const fs = require('fs');
 const path = require('path');
 const lexer = require('../compiler/lexer');
@@ -28,6 +30,32 @@ function logError(stage, error) {
     }
 }
 
+// Function to center a string based on a specified width
+function centerString(str, width) {
+    const totalSpaces = Math.max(0, width - 2); // Account for the borders
+    const spaces = Math.max(0, Math.floor((totalSpaces - str.length) / 2));
+    return ' '.repeat(spaces) + str;
+}
+
+// Function to display the welcome message in a box
+function displayWelcomeMessage(file) {
+    const border = '------------------------';
+    const messageLines = [
+        '   Thanks for using    ',
+        '          Vexty       ',
+        '                      ',
+        '      Running File:    ', // Adjusted spacing
+        '        ' + file,       // Adjusted spacing
+    ];
+
+    console.log(border);
+    messageLines.forEach(line => {
+        console.log(line);
+    });
+    console.log(border);
+    console.log(); // Add a new line for spacing
+}
+
 // Check if a filename is provided
 const fileName = process.argv[2];
 if (!fileName) {
@@ -42,6 +70,9 @@ if (!fs.existsSync(filePath)) {
     console.error(`Error: File '${fileName}' does not exist.`);
     process.exit(1);
 }
+
+// Display the welcome message
+displayWelcomeMessage(fileName);
 
 // Read the file contents
 fs.readFile(filePath, 'utf8', (err, code) => {
