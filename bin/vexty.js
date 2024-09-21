@@ -44,8 +44,8 @@ function displayWelcomeMessage(file) {
         '   Thanks for using    ',
         '          Vexty       ',
         '                      ',
-        '      Running File:    ', // Adjusted spacing
-        '        ' + file,       // Adjusted spacing
+        '      Running File:    ',
+        '        ' + file,
     ];
 
     console.log(border);
@@ -89,7 +89,14 @@ fs.readFile(filePath, 'utf8', (err, code) => {
 
     try {
         console.log('Lexing the source code...');
+        
         const tokens = lexer(code);
+        
+        // Check for empty token result (error handling for infinite loop)
+        if (tokens.length === 0) {
+            throw new Error("No tokens generated. Possible infinite loop or unrecognized characters.");
+        }
+        
         console.log('Lexing completed. Tokens:', tokens);
 
         console.log('Parsing the tokens into an AST...');
