@@ -32,25 +32,26 @@ function logError(stage, error) {
 
 // Function to center a string based on a specified width
 function centerString(str, width) {
-    const totalSpaces = Math.max(0, width - 2); // Account for the borders
-    const spaces = Math.max(0, Math.floor((totalSpaces - str.length) / 2));
-    return ' '.repeat(spaces) + str;
+    const totalSpaces = Math.max(0, width - str.length);
+    const spaces = Math.floor(totalSpaces / 2);
+    return ' '.repeat(spaces) + str + ' '.repeat(totalSpaces - spaces);
 }
 
 // Function to display the welcome message in a box
 function displayWelcomeMessage(file) {
     const border = '------------------------';
+    const width = border.length;
     const messageLines = [
         '   Thanks for using    ',
-        '          Vexty       ',
-        '                      ',
-        '      Running File:    ', // Adjusted spacing
-        '        ' + file,       // Adjusted spacing
+        '        Vexty          ',
+        '                       ',
+        '    Running File:       ',
+        centerString(file, width)
     ];
 
     console.log(border);
     messageLines.forEach(line => {
-        console.log(line);
+        console.log(centerString(line, width));
     });
     console.log(border);
     console.log(); // Add a new line for spacing
@@ -83,7 +84,16 @@ fs.readFile(filePath, 'utf8', (err, code) => {
 
     try {
         console.log('Lexing the source code...');
+
+        // Perform lexing with a 10-second timeout
+        const startTime = Date.now();
         const tokens = lexer(code);
+
+        const lexingTime = Date.now() - startTime;
+        if (lexingTime > 10000) { // If it takes more than 10 seconds
+            throw new Error("Lexing process exceeded the 10-second limit.");
+        }
+
         console.log('Lexing completed. Tokens:', tokens);
 
         console.log('Parsing the tokens into an AST...');
