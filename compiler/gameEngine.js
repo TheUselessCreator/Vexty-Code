@@ -1,7 +1,7 @@
 const fs = require('fs');
 const EventEmitter = require('events');
 
-// Custom Error Class to categorize and provide additional context
+// Custom Error Class for detailed error reporting
 class CustomError extends Error {
     constructor(type, message, token, codeSnippet, position) {
         super(message);
@@ -56,6 +56,7 @@ class GameEngine extends EventEmitter {
             startTime: Date.now(),
             elapsedTime: 0,
         };
+        this.assets = {}; // Dynamic asset storage
     }
 
     async initialize() {
@@ -65,8 +66,7 @@ class GameEngine extends EventEmitter {
                 this.loadModule('physics'),
                 this.loadModule('audio'),
                 this.loadModule('networking'),
-                this.loadModule('input'),
-                this.loadModule('assets')
+                this.loadModule('input')
             ]);
             this.isRunning = true;
             this.emit('initialized', this);
@@ -78,7 +78,6 @@ class GameEngine extends EventEmitter {
 
     async loadModule(moduleName) {
         console.log(`Loading ${moduleName} module...`);
-        // Simulate asynchronous loading
         return new Promise((resolve) => {
             setTimeout(() => {
                 this.modules[moduleName] = {}; // Placeholder for module
@@ -99,20 +98,16 @@ class GameEngine extends EventEmitter {
 
     gameLoop() {
         const currentTime = Date.now();
-        this.deltaTime = (currentTime - this.lastFrameTime) / 1000; // Convert to seconds
+        this.deltaTime = (currentTime - this.lastFrameTime) / 1000;
         this.lastFrameTime = currentTime;
 
-        // Call update methods for each module
         for (const moduleName in this.modules) {
             if (this.modules[moduleName].update) {
                 this.modules[moduleName].update(this.deltaTime);
             }
         }
 
-        // Render the current frame
         this.render();
-
-        // Update performance metrics
         this.performanceMetrics.frames++;
         this.performanceMetrics.elapsedTime = (Date.now() - this.performanceMetrics.startTime) / 1000;
         if (this.performanceMetrics.elapsedTime >= 1) {
@@ -135,23 +130,30 @@ class GameEngine extends EventEmitter {
 
     async unloadModule(moduleName) {
         console.log(`Unloading ${moduleName} module...`);
-        // Unload logic here
         delete this.modules[moduleName];
         console.log(`${moduleName} module unloaded.`);
     }
 
     handleError(error) {
         console.error('An error occurred:', error);
-        // Additional error handling logic here
     }
 
-    loadAssets(assetList) {
-        console.log('Loading assets...');
-        assetList.forEach(asset => {
-            console.log(`Loading asset: ${asset}`);
-            // Simulate asset loading
+    addAsset(assetName, assetData) {
+        this.assets[assetName] = assetData;
+        console.log(`Asset ${assetName} added.`);
+    }
+
+    loadAssets(assets) {
+        console.log('Loading user-defined assets...');
+        assets.forEach(asset => {
+            if (!this.assets[asset]) {
+                console.warn(`Asset ${asset} not found. Please add it before loading.`);
+            } else {
+                console.log(`Loading asset: ${asset}`);
+                // Simulate asset loading
+            }
         });
-        console.log('All assets loaded successfully.');
+        console.log('User-defined assets loaded successfully.');
     }
 
     saveGameState(state) {
@@ -188,7 +190,13 @@ class GameEngine extends EventEmitter {
 
     try {
         await engine.initialize();
-        engine.loadAssets(['player.png', 'enemy.png', 'background.jpg']);
+        // User can add assets dynamically
+        engine.addAsset('player', { type: 'image', src: 'player.png' });
+        engine.addAsset('enemy', { type: 'image', src: 'enemy.png' });
+        engine.addAsset('background', { type: 'image', src: 'background.jpg' });
+
+        // Now load assets based on user-defined additions
+        engine.loadAssets(['player', 'enemy', 'background']);
         engine.saveGameState({ level: 1, score: 100 });
         engine.loadGameState();
         engine.onUserInput('move forward');
