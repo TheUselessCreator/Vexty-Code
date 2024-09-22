@@ -1,5 +1,3 @@
-// compiler/index.js
-
 const fs = require('fs').promises; // Use promises for file operations
 const lexer = require('./lexer');
 const parser = require('./parser');
@@ -15,7 +13,7 @@ async function compile(source) {
         const output = interpreter.interpret(ast);
         return output;
     } catch (error) {
-        handleError(error);
+        handleError(error, source);
     }
 }
 
@@ -44,12 +42,19 @@ async function installAndCompile(packageName) {
     }
 }
 
-// Handle errors with suggestions
-function handleError(error) {
+// Handle errors with suggestions and detailed logging
+function handleError(error, sourceCode = '') {
     console.error('Compilation Error:', error.message);
     const { severity, messages, actions } = getSuggestions(error);
     console.log(`Severity: ${severity}`);
     
+    // Log the problematic line in the source code if available
+    if (sourceCode) {
+        const lines = sourceCode.split('\n');
+        const errorLine = lines[error.lineNumber - 1] || 'Unavailable';
+        console.log(`Error occurred in line ${error.lineNumber}: ${errorLine}`);
+    }
+
     console.log('Suggestions:');
     messages.forEach(message => console.log(`- ${message}`));
     
@@ -59,18 +64,19 @@ function handleError(error) {
     }
 }
 
-// Setup a simple game example
+// Setup a simple game example with advanced features
 async function setupGameExample() {
     const engine = new GameEngine();
     const mainScene = new Scene('Main');
 
-    // Create a player entity
+    // Create a player entity with properties
     const player = new Entity(100, 100, 50, 50, 'blue');
     mainScene.addEntity(player);
 
     // Initialize the scene
     mainScene.init = () => {
         console.log('Main scene initialized');
+        player.startAnimation(); // Example of initializing animations
     };
 
     // Update the scene
@@ -81,6 +87,9 @@ async function setupGameExample() {
         else player.move(0);
         
         if (keys['Space']) player.jump();
+        
+        // Example of collision detection
+        mainScene.checkCollisions(player);
     };
 
     // Render the scene
