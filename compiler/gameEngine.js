@@ -1,150 +1,205 @@
-// compiler/gameEngine.js
+const fs = require('fs');
+const EventEmitter = require('events');
 
-class GameEngine {
+// Custom Error Class to categorize and provide additional context
+class CustomError extends Error {
+    constructor(type, message, token, codeSnippet, position) {
+        super(message);
+        this.name = this.constructor.name;
+        this.type = type;
+        this.token = token;
+        this.codeSnippet = codeSnippet;
+        this.position = position;
+        this.timestamp = new Date().toISOString();
+        Error.captureStackTrace(this, this.constructor);
+    }
+
+    getErrorDetails() {
+        return `
+Error Type: ${this.type}
+Message: ${this.message}
+Token: ${JSON.stringify(this.token)}
+Position: Line ${this.position.line}, Column ${this.position.column}
+Code Snippet: ${this.codeSnippet}
+Timestamp: ${this.timestamp}
+Stack Trace: ${this.stack}
+`;
+    }
+}
+
+// Function to log errors to a file
+function logErrorToFile(error) {
+    const logData = error.getErrorDetails();
+    fs.appendFileSync('error.log', logData + '\n', 'utf8');
+}
+
+// Function to throw a detailed error
+function throwError(type, message, token, code, position = { line: 0, column: 0 }) {
+    const codeSnippet = code.split('\n')[position.line] || '';
+    const error = new CustomError(type, message, token, codeSnippet, position);
+    logErrorToFile(error);
+    throw error;
+}
+
+// Game Engine Components
+class GameEngine extends EventEmitter {
     constructor() {
-        this.scenes = [];
-        this.currentScene = null;
+        super();
+        this.modules = {};
+        this.isRunning = false;
+        this.loopInterval = null;
         this.deltaTime = 0;
-        this.lastTime = 0;
-        this.canvas = document.createElement('canvas');
-        this.context = this.canvas.getContext('2d');
-        document.body.appendChild(this.canvas);
-        this.setupEventListeners();
+        this.lastFrameTime = 0;
+        this.fps = 60;
+        this.performanceMetrics = {
+            frames: 0,
+            startTime: Date.now(),
+            elapsedTime: 0,
+        };
     }
 
-    init() {
-        this.resize();
-        this.loop();
-    }
-
-    resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-    }
-
-    addScene(scene) {
-        this.scenes.push(scene);
-    }
-
-    switchScene(sceneName) {
-        const scene = this.scenes.find(s => s.name === sceneName);
-        if (scene) {
-            this.currentScene = scene;
-            this.currentScene.init(this.context);
+    async initialize() {
+        try {
+            await Promise.all([
+                this.loadModule('renderer'),
+                this.loadModule('physics'),
+                this.loadModule('audio'),
+                this.loadModule('networking'),
+                this.loadModule('input'),
+                this.loadModule('assets')
+            ]);
+            this.isRunning = true;
+            this.emit('initialized', this);
+            console.log('Game engine initialized successfully.');
+        } catch (error) {
+            throwError('InitializationError', 'Failed to initialize the game engine', null, '', { line: 0, column: 0 });
         }
     }
 
-    loop() {
-        requestAnimationFrame((timestamp) => this.update(timestamp));
+    async loadModule(moduleName) {
+        console.log(`Loading ${moduleName} module...`);
+        // Simulate asynchronous loading
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                this.modules[moduleName] = {}; // Placeholder for module
+                console.log(`${moduleName} module loaded.`);
+                resolve();
+            }, 1000);
+        });
     }
 
-    update(timestamp) {
-        this.deltaTime = (timestamp - this.lastTime) / 1000;
-        this.lastTime = timestamp;
+    run() {
+        if (!this.isRunning) {
+            throw new Error('Engine is not initialized. Please initialize the engine first.');
+        }
+        console.log('Starting game loop...');
+        this.loopInterval = setInterval(this.gameLoop.bind(this), 1000 / this.fps);
+        this.emit('run', this);
+    }
 
-        if (this.currentScene) {
-            this.currentScene.update(this.deltaTime);
-            this.currentScene.render(this.context);
+    gameLoop() {
+        const currentTime = Date.now();
+        this.deltaTime = (currentTime - this.lastFrameTime) / 1000; // Convert to seconds
+        this.lastFrameTime = currentTime;
+
+        // Call update methods for each module
+        for (const moduleName in this.modules) {
+            if (this.modules[moduleName].update) {
+                this.modules[moduleName].update(this.deltaTime);
+            }
         }
 
-        this.loop();
-    }
+        // Render the current frame
+        this.render();
 
-    setupEventListeners() {
-        window.addEventListener('resize', () => this.resize());
-        window.addEventListener('keydown', (e) => this.handleKeyDown(e));
-        window.addEventListener('keyup', (e) => this.handleKeyUp(e));
-    }
-
-    handleKeyDown(event) {
-        if (this.currentScene && this.currentScene.handleInput) {
-            this.currentScene.handleInput(event, true);
+        // Update performance metrics
+        this.performanceMetrics.frames++;
+        this.performanceMetrics.elapsedTime = (Date.now() - this.performanceMetrics.startTime) / 1000;
+        if (this.performanceMetrics.elapsedTime >= 1) {
+            console.log(`FPS: ${this.performanceMetrics.frames}`);
+            this.performanceMetrics.frames = 0;
+            this.performanceMetrics.startTime = Date.now();
         }
     }
 
-    handleKeyUp(event) {
-        if (this.currentScene && this.currentScene.handleInput) {
-            this.currentScene.handleInput(event, false);
+    render() {
+        console.log('Rendering frame...');
+        // Rendering logic here
+    }
+
+    stop() {
+        clearInterval(this.loopInterval);
+        this.isRunning = false;
+        console.log('Game loop stopped.');
+    }
+
+    async unloadModule(moduleName) {
+        console.log(`Unloading ${moduleName} module...`);
+        // Unload logic here
+        delete this.modules[moduleName];
+        console.log(`${moduleName} module unloaded.`);
+    }
+
+    handleError(error) {
+        console.error('An error occurred:', error);
+        // Additional error handling logic here
+    }
+
+    loadAssets(assetList) {
+        console.log('Loading assets...');
+        assetList.forEach(asset => {
+            console.log(`Loading asset: ${asset}`);
+            // Simulate asset loading
+        });
+        console.log('All assets loaded successfully.');
+    }
+
+    saveGameState(state) {
+        fs.writeFileSync('savegame.json', JSON.stringify(state), 'utf8');
+        console.log('Game state saved.');
+    }
+
+    loadGameState() {
+        if (fs.existsSync('savegame.json')) {
+            const state = JSON.parse(fs.readFileSync('savegame.json', 'utf8'));
+            console.log('Game state loaded:', state);
+            return state;
         }
+        console.log('No saved game state found.');
+        return null;
+    }
+
+    onUserInput(input) {
+        console.log(`User input received: ${input}`);
+        // Handle user input logic here
     }
 }
 
-class Scene {
-    constructor(name) {
-        this.name = name;
-        this.entities = [];
+// Example Usage
+(async () => {
+    const engine = new GameEngine();
+    engine.on('initialized', () => {
+        engine.run();
+    });
+
+    engine.on('run', () => {
+        console.log('Game is running...');
+    });
+
+    try {
+        await engine.initialize();
+        engine.loadAssets(['player.png', 'enemy.png', 'background.jpg']);
+        engine.saveGameState({ level: 1, score: 100 });
+        engine.loadGameState();
+        engine.onUserInput('move forward');
+    } catch (error) {
+        engine.handleError(error);
     }
 
-    init(context) {
-        // Initialize the scene
-    }
+    // Simulate stopping the engine after some time
+    setTimeout(() => {
+        engine.stop();
+    }, 10000);
+})();
 
-    update(deltaTime) {
-        this.entities.forEach(entity => entity.update(deltaTime));
-    }
-
-    render(context) {
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-        this.entities.forEach(entity => entity.render(context));
-    }
-
-    addEntity(entity) {
-        this.entities.push(entity);
-    }
-
-    handleInput(event, isKeyDown) {
-        // Handle user input for the scene
-    }
-}
-
-class Entity {
-    constructor(x, y, width, height, color) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.color = color;
-        this.velocityX = 0;
-        this.velocityY = 0;
-        this.gravity = 0.5;
-        this.isGrounded = false;
-    }
-
-    update(deltaTime) {
-        this.y += this.velocityY;
-        this.x += this.velocityX;
-        
-        // Apply gravity
-        if (!this.isGrounded) {
-            this.velocityY += this.gravity;
-        }
-
-        // Simple ground collision
-        if (this.y + this.height > window.innerHeight) {
-            this.y = window.innerHeight - this.height;
-            this.isGrounded = true;
-            this.velocityY = 0;
-        } else {
-            this.isGrounded = false;
-        }
-    }
-
-    render(context) {
-        context.fillStyle = this.color;
-        context.fillRect(this.x, this.y, this.width, this.height);
-    }
-
-    jump() {
-        if (this.isGrounded) {
-            this.velocityY = -10; // Jump height
-            this.isGrounded = false;
-        }
-    }
-
-    move(direction) {
-        this.velocityX = direction * 5; // Movement speed
-    }
-}
-
-// Export the GameEngine and Scene classes
-module.exports = { GameEngine, Scene, Entity };
+module.exports = { throwError, GameEngine };
