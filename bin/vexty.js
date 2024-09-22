@@ -89,14 +89,15 @@ fs.readFile(filePath, 'utf8', (err, code) => {
 
     try {
         console.log('Lexing the source code...');
-        
+
+        // Invoke the lexer and pass the source code
         const tokens = lexer(code);
-        
+
         // Check for empty token result (error handling for infinite loop)
         if (tokens.length === 0) {
             throw new Error("No tokens generated. Possible infinite loop or unrecognized characters.");
         }
-        
+
         console.log('Lexing completed. Tokens:', tokens);
 
         console.log('Parsing the tokens into an AST...');
@@ -108,12 +109,15 @@ fs.readFile(filePath, 'utf8', (err, code) => {
         console.log('Interpreting completed. Result:', result);
 
     } catch (error) {
-        if (error instanceof SyntaxError) {
+        // Enhanced error handling for lexing, parsing, and interpreting stages
+        if (error.message.includes('token')) {
+            logError('Lexing', error);
+        } else if (error instanceof SyntaxError) {
             logError('Parsing', error);
         } else if (error instanceof TypeError) {
             logError('Interpreting', error);
         } else {
-            logError('Lexing', error);
+            logError('General Error', error);
         }
         process.exit(1);
     }
