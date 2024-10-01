@@ -1,134 +1,115 @@
 const express = require('express');
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const bodyParser = require('body-parser');
-const { exec } = require('child_process');
-require('dotenv').config(); // Load environment variables from .env file
-
+const cors = require('cors');
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public')); // Serve static files (like HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
-// Project directory limit
-const MAX_PROJECTS = 10;
+const projectsDir = path.join(__dirname, 'projects');
 
-// Create project directory if it doesn't exist
-function createProjectDir(projectName) {
-    const projectPath = path.join(__dirname, 'projects', projectName);
-    if (!fs.existsSync(projectPath)) {
-        fs.mkdirSync(projectPath, { recursive: true });
-    }
-}
+// Ensure the projects directory exists
+fs.mkdir(projectsDir, { recursive: true });
 
-// Endpoint to create a new project
-app.post('/api/projects/create', (req, res) => {
-    const { projectName } = req.body;
+// Create a new project
+app.post('/api/projects', async (req, res) => {
+    const { name } = req.body;
+    const projectPath = path.join(projectsDir, name);
 
-    // Limit the number of projects
-    const projects = fs.readdirSync(path.join(__dirname, 'projects'));
-    if (projects.length >= MAX_PROJECTS) {
-        return res.status(400).json({ message: 'Project limit reached. Delete a project to create a new one.' });
-    }
-
-    createProjectDir(projectName);
-    res.status(201).json({ message: 'Project created successfully.' });
-});
-
-// Endpoint to list all projects
-app.get('/api/projects', (req, res) => {
-    const projectsDir = path.join(__dirname, 'projects');
-    const projects = fs.readdirSync(projectsDir).map(dir => ({ name: dir }));
-    res.status(200).json(projects);
-});
-
-// Endpoint to delete a project
-app.delete('/api/projects/delete', (req, res) => {
-    const { projectName } = req.body;
-    const projectPath = path.join(__dirname, 'projects', projectName);
-
-    if (fs.existsSync(projectPath)) {
-        fs.rmdirSync(projectPath, { recursive: true });
-        res.status(200).json({ message: 'Project deleted successfully.' });
-    } else {
-        res.status(404).json({ message: 'Project not found.' });
+    try {
+        await fs.mkdir(projectPath, { recursive: true });
+        res.status(201).json({ message: 'Project created successfully', name });
+    } catch (error) {
+        console.error('Error creating project:', error);
+        res.status(500).json({ message: 'Error creating project', error: error.message });
     }
 });
 
-// Endpoint to create a new file
-app.post('/api/files/create', (req, res) => {
-    const { projectName, fileName, fileContent } = req.body;
-    const filePath = path.join(__dirname, 'projects', projectName, fileName);
+// Delete a project
+app.delete('/api/projects/:name', async (req, res) => {
+    const { name } = req.params;
+    const projectPath = path.join(projectsDir, name);
 
-    fs.writeFile(filePath, fileContent, (err) => {
-        if (err) return res.status(500).json({ message: 'Error creating file' });
-        res.status(201).json({ message: 'File created successfully.' });
-    });
+    try {
+        await fs.rmdir(projectPath, { recursive: true });
+        res.status(200).json({ message: 'Project deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting project:', error);
+        res.status(500).json({ message: 'Error deleting project', error: error.message });
+    }
 });
 
-// Endpoint to list files in a project
-app.get('/api/projects/:projectName/files', (req, res) => {
+// List all projects
+app.get('/api/projects', async (req, res) => {
+    try {
+        const projects = await fs.readdir(projectsDir);
+        res.status(200).json(projects);
+    } catch (error) {
+        console.error('Error listing projects:', error);
+        res.status(500).json({ message: 'Error listing projects', error: error.message });
+    }
+});
+
+// Create a new file
+app.post('/api/projects/:projectName/files', async (req, res) => {
     const { projectName } = req.params;
-    const projectPath = path.join(__dirname, 'projects', projectName);
+    const { fileName } = req.body;
+    const filePath = path.join(projectsDir, projectName, fileName);
 
-    if (!fs.existsSync(projectPath)) {
-        return res.status(404).json({ message: 'Project not found.' });
-    }
-
-    const files = fs.readdirSync(projectPath).map(file => ({ name: file }));
-    res.status(200).json(files);
-});
-
-// Endpoint to delete a file
-app.delete('/api/files/delete', (req, res) => {
-    const { projectName, fileName } = req.body;
-    const filePath = path.join(__dirname, 'projects', projectName, fileName);
-
-    if (fs.existsSync(filePath)) {
-        fs.unlink(filePath, (err) => {
-            if (err) return res.status(500).json({ message: 'Error deleting file' });
-            res.status(200).json({ message: 'File deleted successfully.' });
-        });
-    } else {
-        res.status(404).json({ message: 'File not found.' });
+    try {
+        await fs.writeFile(filePath, ''); // Create an empty file
+        res.status(201).json({ message: 'File created successfully', fileName });
+    } catch (error) {
+        console.error('Error creating file:', error);
+        res.status(500).json({ message: 'Error creating file', error: error.message });
     }
 });
 
-// Endpoint to rename a file
-app.post('/api/files/rename', (req, res) => {
-    const { projectName, oldFileName, newFileName } = req.body;
-    const oldFilePath = path.join(__dirname, 'projects', projectName, oldFileName);
-    const newFilePath = path.join(__dirname, 'projects', projectName, newFileName);
+// Delete a file
+app.delete('/api/projects/:projectName/files/:fileName', async (req, res) => {
+    const { projectName, fileName } = req.params;
+    const filePath = path.join(projectsDir, projectName, fileName);
 
-    if (fs.existsSync(oldFilePath)) {
-        fs.rename(oldFilePath, newFilePath, (err) => {
-            if (err) return res.status(500).json({ message: 'Error renaming file' });
-            res.status(200).json({ message: 'File renamed successfully.' });
-        });
-    } else {
-        res.status(404).json({ message: 'File not found.' });
+    try {
+        await fs.unlink(filePath);
+        res.status(200).json({ message: 'File deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting file:', error);
+        res.status(500).json({ message: 'Error deleting file', error: error.message });
     }
 });
 
-// Endpoint to run Vexy code
-app.post('/api/run', (req, res) => {
-    const { projectName, fileName } = req.body;
-    const filePath = path.join(__dirname, 'projects', projectName, fileName);
+// List files in a project
+app.get('/api/projects/:projectName/files', async (req, res) => {
+    const { projectName } = req.params;
+    const projectPath = path.join(projectsDir, projectName);
 
-    if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ message: 'File not found.' });
+    try {
+        const files = await fs.readdir(projectPath);
+        res.status(200).json(files);
+    } catch (error) {
+        console.error('Error listing files:', error);
+        res.status(500).json({ message: 'Error listing files', error: error.message });
     }
+});
 
-    // Assuming you have a Vexy interpreter command line tool
-    exec(`vexy ${filePath}`, (err, stdout, stderr) => {
-        if (err) {
-            console.error(`Error: ${stderr}`);
-            return res.status(500).json({ message: 'Error running Vexy code', error: stderr });
-        }
-        res.status(200).json({ output: stdout });
-    });
+// Get the content of a file
+app.get('/api/projects/:projectName/files/:fileName', async (req, res) => {
+    const { projectName, fileName } = req.params;
+    const filePath = path.join(projectsDir, projectName, fileName);
+
+    try {
+        const content = await fs.readFile(filePath, 'utf8');
+        res.status(200).json({ content });
+    } catch (error) {
+        console.error('Error reading file:', error);
+        res.status(500).json({ message: 'Error reading file', error: error.message });
+    }
 });
 
 // Start the server
