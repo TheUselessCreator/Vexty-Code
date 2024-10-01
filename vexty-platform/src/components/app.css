@@ -1,0 +1,24 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+.console,
+.editor,
+.file-tree,
+.project-manager {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    width: 300px;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+button {
+    margin-left: 5px;
+}
