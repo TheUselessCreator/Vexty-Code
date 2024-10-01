@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vexy IDE</title>
+    <link rel="stylesheet" href="style.css"> <!-- Optional: Add a CSS file for styling -->
+</head>
+<body>
+    <div id="console">
+        <h1>Vexy IDE</h1>
+        <div id="output"></div>
+        <input type="text" id="input" placeholder="Enter command here..." />
+        <button id="run">Run</button>
+    </div>
+
+    <div id="projects">
+        <h2>Projects</h2>
+        <input type="text" id="projectName" placeholder="Project Name" />
+        <button id="createProject">Create Project</button>
+        <button id="listProjects">List Projects</button>
+        <button id="deleteProject">Delete Project</button>
+    </div>
+
+    <div id="files">
+        <h2>Files</h2>
+        <input type="text" id="fileName" placeholder="File Name" />
+        <button id="createFile">Create File</button>
+        <button id="deleteFile">Delete File</button>
+        <button id="renameFile">Rename File</button>
+        <button id="listFiles">List Files</button>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
